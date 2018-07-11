@@ -1,0 +1,13 @@
+.App {
+	text-align: center;
+}
+
+.App textarea {
+	width: 50em;
+	height: 10em;
+}
+
+.App button {
+	width: 50em;
+	height: 4em;
+}
