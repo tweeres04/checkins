@@ -4,6 +4,20 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import Checkin from './components/Checkin';
 import Settings from './components/Settings';
 
+function NavItem({ children, to, exact }) {
+	return (
+		<Route
+			path={to}
+			exact={exact}
+			children={({ match }) => (
+				<li className={match ? 'is-active' : null}>
+					<Link to={to}>{children}</Link>
+				</li>
+			)}
+		/>
+	);
+}
+
 class App extends Component {
 	render() {
 		return (
@@ -12,9 +26,14 @@ class App extends Component {
 					<div className="container">
 						<div className="columns">
 							<div className="column">
-								<Link to="/settings">
-									<button className="button">Settings</button>
-								</Link>
+								<div className="tabs">
+									<ul>
+										<NavItem exact to="/">
+											Checkin
+										</NavItem>
+										<NavItem to="/settings">Settings</NavItem>
+									</ul>
+								</div>
 							</div>
 						</div>
 						<Route exact path="/" component={Checkin} />
