@@ -3,21 +3,34 @@ import firebase from 'firebase/app';
 
 import update from 'immutability-helper';
 
-function CheckinDefinition({ checkin, handleChange }) {
+function CheckinDefinition({ checkin, handleChange, removeCheckin }) {
 	return (
-		<div className="field">
+		<Fragment>
 			<label htmlFor="" className="label">
 				Checkin at
 			</label>
-			<div className="control">
-				<input
-					className="input"
-					type="text"
-					value={checkin.time}
-					onChange={handleChange}
-				/>
+			<div className="field has-addons">
+				<div className="control">
+					<input
+						className="input"
+						type="text"
+						value={checkin.time}
+						onChange={handleChange}
+					/>
+				</div>
+				<div className="control">
+					<button
+						disabled={!removeCheckin}
+						className="button"
+						onClick={() => {
+							removeCheckin(checkin);
+						}}
+					>
+						🗑
+					</button>
+				</div>
 			</div>
-		</div>
+		</Fragment>
 	);
 }
 
@@ -42,14 +55,11 @@ export default class Settings extends Component {
 					.doc(`users/${uid}`)
 					.get();
 
-				let checkins, email;
-				if (docSnapshot.exists) {
-					const settingsData = docSnapshot.data().settings;
-					email = settingsData.email || '';
-					checkins = settingsData.checkins;
-				} else {
-					checkins = [checkinFactory()];
-				}
+				const snapshotData = docSnapshot.data();
+				const email = snapshotData ? snapshotData.settings.email : '';
+				const checkins = snapshotData
+					? snapshotData.settings.checkins
+					: [checkinFactory()];
 
 				this.setState({ email, checkins, loading: false });
 			}
@@ -63,6 +73,17 @@ export default class Settings extends Component {
 		checkins = [...checkins, newCheckin];
 
 		this.setState({ checkins });
+	};
+	removeCheckin = checkin => {
+		let { checkins } = this.state;
+
+		const indexToRemove = checkins.indexOf(checkin);
+
+		const statePatch = update(this.state, {
+			checkins: { $splice: [[indexToRemove, 1]] }
+		});
+
+		this.setState(statePatch);
 	};
 	handleChangeEmail = ({ target: { value } }) => {
 		this.setState({ email: value });
@@ -119,6 +140,7 @@ export default class Settings extends Component {
 						<div className="column">
 							{checkins.map((c, i) => (
 								<CheckinDefinition
+									removeCheckin={checkins.length > 1 && this.removeCheckin}
 									checkin={c}
 									key={i}
 									handleChange={({ target: { value } }) => {
@@ -130,7 +152,10 @@ export default class Settings extends Component {
 					</div>
 					<div className="columns">
 						<div className="column">
-							<button className="button is-primary" onClick={this.handleSubmit}>
+							<button
+								className="button is-primary is-fullwidth is-medium"
+								onClick={this.handleSubmit}
+							>
 								Save
 							</button>
 						</div>

@@ -3,29 +3,29 @@ import firebase from 'firebase/app';
 import classnames from 'classnames';
 import formatDate from 'date-fns/format';
 
-let userPromise;
+let userPromise, intervalHandle;
 
 class App extends Component {
 	state = {
 		entryText: '',
-		submitting: false
+		submitting: false,
+		now: new Date()
 	};
 	componentDidMount() {
 		userPromise = new Promise((resolve, reject) => {
 			firebase.auth().onAuthStateChanged(user => {
 				if (user) {
 					resolve(user);
-				} else {
-					firebase
-						.auth()
-						.signInAnonymously()
-						.catch(err => {
-							console.error(err);
-							reject(err);
-						});
 				}
 			});
 		});
+
+		intervalHandle = setInterval(() => {
+			this.setState({ now: new Date() });
+		}, 30000);
+	}
+	componentWillUnmount() {
+		clearInterval(intervalHandle);
 	}
 	submit = async () => {
 		this.setState({ submitting: true });
@@ -54,7 +54,7 @@ class App extends Component {
 		this.setState({ entryText: value });
 	};
 	render() {
-		const { entryText, submitting } = this.state;
+		const { entryText, submitting, now } = this.state;
 
 		const submitButtonClasses = classnames(
 			'button is-large is-fullwidth is-primary',
@@ -63,7 +63,7 @@ class App extends Component {
 			}
 		);
 
-		const dateString = formatDate(new Date(), 'MMM D, YYYY');
+		const dateString = formatDate(now, 'MMM D, YYYY - H:mm');
 
 		return (
 			<div className="columns">
