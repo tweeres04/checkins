@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import firebase from 'firebase/app';
+import Loadable from 'react-loadable';
 
-import Checkin from './components/Checkin';
-import Settings from './components/Settings';
-import Signin from './components/Signin';
+const Checkin = Loadable({
+	loader: () => import('./components/Checkin'),
+	loading: () => null
+});
+
+const Settings = Loadable({
+	loader: () => import('./components/Settings'),
+	loading: () => null
+});
+
+const Signin = Loadable({
+	loader: () => import('./components/Signin'),
+	loading: () => null
+});
 
 function NavItem({ children, to, exact }) {
 	return (
