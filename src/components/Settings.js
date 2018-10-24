@@ -30,6 +30,7 @@ function checkinFactory() {
 export default class Settings extends Component {
 	state = {
 		loading: true,
+		email: '',
 		checkins: null
 	};
 	async componentDidMount() {
@@ -41,14 +42,16 @@ export default class Settings extends Component {
 					.doc(`users/${uid}`)
 					.get();
 
-				let checkins;
+				let checkins, email;
 				if (docSnapshot.exists) {
-					checkins = docSnapshot.data().settings.checkins;
+					const settingsData = docSnapshot.data().settings;
+					email = settingsData.email || '';
+					checkins = settingsData.checkins;
 				} else {
 					checkins = [checkinFactory()];
 				}
 
-				this.setState({ checkins, loading: false });
+				this.setState({ email, checkins, loading: false });
 			}
 		});
 	}
@@ -61,6 +64,9 @@ export default class Settings extends Component {
 
 		this.setState({ checkins });
 	};
+	handleChangeEmail = ({ target: { value } }) => {
+		this.setState({ email: value });
+	};
 	handleChangeCheckin = (time, i) => {
 		const statePatch = update(this.state, {
 			checkins: { [i]: { time: { $set: time } } }
@@ -68,22 +74,39 @@ export default class Settings extends Component {
 		this.setState(statePatch);
 	};
 	handleSubmit = async () => {
-		const { checkins } = this.state;
+		const { email, checkins } = this.state;
 		const { uid } = firebase.auth().currentUser;
 
 		firebase
 			.firestore()
 			.doc(`users/${uid}`)
-			.set({ settings: { checkins } });
-
-		console.log('Saved');
-		console.table(checkins);
+			.set({ settings: { email, checkins } });
 	};
 	render() {
-		const { checkins, loading } = this.state;
+		const { email, checkins, loading } = this.state;
+
 		return (
 			loading || (
 				<Fragment>
+					<h1 className="title">To what email would you like your checkins?</h1>
+					<div className="columns">
+						<div className="column">
+							<div className="field">
+								<label htmlFor="" className="label">
+									Email
+								</label>
+								<div className="control">
+									<input
+										name="email"
+										className="input"
+										type="text"
+										value={email}
+										onChange={this.handleChangeEmail}
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
 					<h1 className="title">When would you like your checkins?</h1>
 					<div className="columns">
 						<div className="column">
