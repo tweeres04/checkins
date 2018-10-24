@@ -3,7 +3,7 @@ require('dotenv').config({ path: `${__dirname}/../.env.local` });
 const cron = require('cron');
 const firebaseAdmin = require('firebase-admin');
 const _ = require('lodash');
-const serviceAccount = require('../checkins-607b8-firebase-adminsdk-lxe9u-8bcc69cc18.json');
+const serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_FILENAME);
 const mailgunJs = require('mailgun-js');
 
 firebaseAdmin.initializeApp({
