@@ -49,6 +49,8 @@ async function sendEmail({ time, email }) {
 }
 
 async function sendCheckins() {
+	console.log(new Date().toLocaleString(), 'Starting job');
+
 	const querySnapshot = await firebaseAdmin
 		.firestore()
 		.collection('users')
@@ -62,6 +64,12 @@ async function sendCheckins() {
 		const jobs = checkins.map(({ time }) => {
 			const [hours, minutes = 0, seconds = 0] = time.split(':');
 			const targetDate = new Date();
+
+			console.log(
+				new Date().toLocaleString(),
+				`Setting up checkin for ${email} at ${time}`
+			);
+
 			targetDate.setHours(hours, _.toNumber(minutes), _.toNumber(seconds));
 			return cron.job(
 				targetDate,
@@ -78,12 +86,14 @@ async function sendCheckins() {
 	});
 }
 
-// const job = cron.job(
-// 	'0 0 0 * * * *',
-// 	sendCheckins,
-// 	null,
-// 	true,
-// 	'America/Vancouver'
-// );
+const job = cron.job(
+	'0 0 0 * * *',
+	sendCheckins,
+	null,
+	true,
+	'America/Vancouver'
+);
 
-sendCheckins();
+job.start();
+
+// sendCheckins();

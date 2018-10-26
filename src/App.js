@@ -8,6 +8,11 @@ const Checkin = Loadable({
 	loading: () => null
 });
 
+const History = Loadable({
+	loader: () => import('./components/History'),
+	loading: () => null
+});
+
 const Settings = Loadable({
 	loader: () => import('./components/Settings'),
 	loading: () => null
@@ -57,6 +62,7 @@ class App extends Component {
 											<NavItem exact to="/">
 												Checkin
 											</NavItem>
+											<NavItem to="/history">History</NavItem>
 											<NavItem to="/settings">Settings</NavItem>
 											<li
 												onClick={() => {
@@ -70,6 +76,7 @@ class App extends Component {
 								</div>
 							</div>
 							<Route exact path="/" component={Checkin} />
+							<Route path="/history" component={History} />
 							<Route path="/settings" component={Settings} />
 						</div>
 					</div>

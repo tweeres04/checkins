@@ -3,13 +3,18 @@ import firebase from 'firebase/app';
 import classnames from 'classnames';
 import formatDate from 'date-fns/format';
 
+import Markdown from 'react-markdown';
+
+import markdownIcon from '../markdown.svg';
+
 let userPromise, intervalHandle;
 
 class App extends Component {
 	state = {
 		entryText: '',
 		submitting: false,
-		now: new Date()
+		now: new Date(),
+		preview: false
 	};
 	componentDidMount() {
 		userPromise = new Promise((resolve, reject) => {
@@ -53,8 +58,11 @@ class App extends Component {
 	handleChange = ({ target: { value } }) => {
 		this.setState({ entryText: value });
 	};
+	togglePreview = () => {
+		this.setState({ preview: !this.state.preview });
+	};
 	render() {
-		const { entryText, submitting, now } = this.state;
+		const { entryText, submitting, now, preview } = this.state;
 
 		const submitButtonClasses = classnames(
 			'button is-large is-fullwidth is-primary',
@@ -63,7 +71,7 @@ class App extends Component {
 			}
 		);
 
-		const dateString = formatDate(now, 'MMM D, YYYY - H:mm');
+		const dateString = formatDate(now, 'MMM D, YYYY - h:mm A');
 
 		return (
 			<div className="columns">
@@ -71,11 +79,32 @@ class App extends Component {
 					<h1 className="title">{dateString} - What did you work on today?</h1>
 					<div className="field">
 						<div className="control">
-							<textarea
-								className="textarea"
-								value={entryText}
-								onChange={this.handleChange}
-							/>
+							{preview ? (
+								<div className="content markdown-preview">
+									<Markdown source={entryText} />
+								</div>
+							) : (
+								<textarea
+									className="textarea"
+									value={entryText}
+									onChange={this.handleChange}
+								/>
+							)}
+							<div className="help">
+								<a href="https://www.markdownguide.org/">
+									<span className="icon is-small">
+										<img src={markdownIcon} />
+									</span>{' '}
+									Markdown
+								</a>{' '}
+								is supported
+								<button
+									className="button is-text is-pulled-right is-small"
+									onClick={this.togglePreview}
+								>
+									{preview ? 'Edit' : 'Preview'}
+								</button>
+							</div>
 						</div>
 					</div>
 					<div className="field">
