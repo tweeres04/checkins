@@ -90,7 +90,7 @@ function registerValidSW(swUrl) {
 							console.log('New content is available; please refresh.');
 							ReactDOM.render(
 								<NewContentNotification />,
-								document.getElementById('swDiv')
+								document.getElementById('service-worker')
 							);
 						} else {
 							// At this point, everything has been precached.
