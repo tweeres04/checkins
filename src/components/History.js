@@ -2,6 +2,9 @@ import React, { Component, Fragment } from 'react';
 import firebase from 'firebase/app';
 import Markdown from 'react-markdown';
 
+import LoadingScreen from '../LoadingScreen';
+import title from '../title';
+
 class HistoryCard extends Component {
 	state = { expanded: true };
 	toggleExpanded = () => {
@@ -46,6 +49,7 @@ export default class History extends Component {
 		entries: null
 	};
 	async componentDidMount() {
+		document.title = title('History');
 		const { uid } = firebase.auth().currentUser;
 		const entriesSnapshot = await firebase
 			.firestore()
@@ -62,10 +66,13 @@ export default class History extends Component {
 		return (
 			<Fragment>
 				<h1 className="title">History</h1>
-				{loading ||
+				{loading ? (
+					<LoadingScreen />
+				) : (
 					entries.map(e => (
 						<HistoryCard entry={e} key={e.timestamp.toString()} />
-					))}
+					))
+				)}
 			</Fragment>
 		);
 	}

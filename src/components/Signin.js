@@ -4,8 +4,11 @@ import firebaseui from 'firebaseui';
 
 import 'firebaseui/dist/firebaseui.css';
 
+import title from '../title';
+
 export default class Signin extends Component {
 	componentDidMount() {
+		document.title = title('Sign in');
 		const uiConfig = {
 			signInOptions: [
 				firebase.auth.FacebookAuthProvider.PROVIDER_ID,

@@ -3,6 +3,9 @@ import firebase from 'firebase/app';
 
 import update from 'immutability-helper';
 
+import LoadingScreen from '../LoadingScreen';
+import title from '../title';
+
 function CheckinDefinition({ checkin, handleChange, removeCheckin }) {
 	return (
 		<Fragment>
@@ -47,6 +50,7 @@ export default class Settings extends Component {
 		checkins: null
 	};
 	async componentDidMount() {
+		document.title = title('Settings');
 		firebase.auth().onAuthStateChanged(async user => {
 			if (user) {
 				const { uid } = user;
@@ -106,62 +110,62 @@ export default class Settings extends Component {
 	render() {
 		const { email, checkins, loading } = this.state;
 
-		return (
-			loading || (
-				<Fragment>
-					<h1 className="title">To what email would you like your checkins?</h1>
-					<div className="columns">
-						<div className="column">
-							<div className="field">
-								<label htmlFor="" className="label">
-									Email
-								</label>
-								<div className="control">
-									<input
-										name="email"
-										className="input"
-										type="text"
-										value={email}
-										onChange={this.handleChangeEmail}
-									/>
-								</div>
+		return loading ? (
+			<LoadingScreen />
+		) : (
+			<Fragment>
+				<h1 className="title">To what email would you like your checkins?</h1>
+				<div className="columns">
+					<div className="column">
+						<div className="field">
+							<label htmlFor="" className="label">
+								Email
+							</label>
+							<div className="control">
+								<input
+									name="email"
+									className="input"
+									type="text"
+									value={email}
+									onChange={this.handleChangeEmail}
+								/>
 							</div>
 						</div>
 					</div>
-					<h1 className="title">When would you like your checkins?</h1>
-					<div className="columns">
-						<div className="column">
-							<button className="button" onClick={this.addCheckin}>
-								Add checkin
-							</button>
-						</div>
+				</div>
+				<h1 className="title">When would you like your checkins?</h1>
+				<div className="columns">
+					<div className="column">
+						<button className="button" onClick={this.addCheckin}>
+							Add checkin
+						</button>
 					</div>
-					<div className="columns">
-						<div className="column">
-							{checkins.map((c, i) => (
-								<CheckinDefinition
-									removeCheckin={checkins.length > 1 && this.removeCheckin}
-									checkin={c}
-									key={i}
-									handleChange={({ target: { value } }) => {
-										this.handleChangeCheckin(value, i);
-									}}
-								/>
-							))}
-						</div>
+				</div>
+				<div className="columns">
+					<div className="column">
+						{checkins.map((c, i) => (
+							<CheckinDefinition
+								removeCheckin={checkins.length > 1 && this.removeCheckin}
+								checkin={c}
+								key={i}
+								handleChange={({ target: { value } }) => {
+									this.handleChangeCheckin(value, i);
+								}}
+							/>
+						))}
 					</div>
-					<div className="columns">
-						<div className="column">
-							<button
-								className="button is-primary is-fullwidth is-medium"
-								onClick={this.handleSubmit}
-							>
-								Save
-							</button>
-						</div>
+				</div>
+				<div className="columns">
+					<div className="column">
+						<button
+							className="button is-primary is-fullwidth is-medium"
+							onClick={this.handleSubmit}
+						>
+							Save
+						</button>
 					</div>
-				</Fragment>
-			)
+				</div>
+			</Fragment>
 		);
 	}
 }

@@ -6,6 +6,7 @@ import formatDate from 'date-fns/format';
 import Markdown from 'react-markdown';
 
 import markdownIcon from '../markdown.svg';
+import title from '../title';
 
 let userPromise, intervalHandle;
 
@@ -17,6 +18,7 @@ class App extends Component {
 		preview: false
 	};
 	componentDidMount() {
+		document.title = title('Checkin');
 		userPromise = new Promise((resolve, reject) => {
 			firebase.auth().onAuthStateChanged(user => {
 				if (user) {
