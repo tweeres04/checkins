@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+
 import 'bulma/css/bulma.css';
 import './index.css';
+
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
