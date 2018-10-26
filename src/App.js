@@ -64,12 +64,14 @@ class App extends Component {
 											</NavItem>
 											<NavItem to="/history">History</NavItem>
 											<NavItem to="/settings">Settings</NavItem>
-											<li
-												onClick={() => {
-													firebase.auth().signOut();
-												}}
-											>
-												Logout
+											<li>
+												<a
+													onClick={() => {
+														firebase.auth().signOut();
+													}}
+												>
+													Logout
+												</a>
 											</li>
 										</ul>
 									</div>
