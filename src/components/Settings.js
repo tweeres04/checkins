@@ -134,6 +134,7 @@ export default class Settings extends Component {
 					</div>
 				</div>
 				<h1 className="title">When would you like your checkins?</h1>
+				<h6 className="subtitle is-6">Times must be in 24 hour format (h:mm)</h6>
 				<div className="columns">
 					<div className="column">
 						<button className="button" onClick={this.addCheckin}>
