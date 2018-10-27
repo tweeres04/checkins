@@ -87,7 +87,7 @@ async function sendCheckins() {
 }
 
 const job = cron.job(
-	'0 0 0 * * *',
+	'0 0 0 * * mon-fri',
 	sendCheckins,
 	null,
 	true,
