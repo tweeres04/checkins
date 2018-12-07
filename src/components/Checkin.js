@@ -55,7 +55,7 @@ class App extends Component {
 				return;
 			});
 
-		this.setState({ entryText: '', submitting: false });
+		this.setState({ entryText: '', submitting: false, preview: false });
 	};
 	handleChange = ({ target: { value } }) => {
 		this.setState({ entryText: value });
