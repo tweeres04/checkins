@@ -8,38 +8,57 @@ import title from '../title';
 
 function CheckinDefinition({ checkin, handleChange, removeCheckin }) {
 	return (
-		<Fragment>
-			<label htmlFor="" className="label">
-				Checkin at
-			</label>
-			<div className="field has-addons">
-				<div className="control">
-					<input
-						className="input"
-						type="text"
-						value={checkin.time}
-						onChange={handleChange}
-					/>
-				</div>
-				<div className="control">
-					<button
-						disabled={!removeCheckin}
-						className="button"
-						onClick={() => {
-							removeCheckin(checkin);
-						}}
-					>
-						🗑
-					</button>
+		<div className="columns">
+			<div className="column is-3">
+				<label htmlFor="" className="label">
+					Checkin at
+				</label>
+				<div className="field has-addons">
+					<div className="control">
+						<input
+							className="input"
+							type="text"
+							name="time"
+							value={checkin.time}
+							onChange={handleChange}
+						/>
+					</div>
+					<div className="control">
+						<button
+							disabled={!removeCheckin}
+							className="button"
+							onClick={() => {
+								removeCheckin(checkin);
+							}}
+						>
+							<span role="img" aria-label="delete">
+								❌
+							</span>
+						</button>
+					</div>
 				</div>
 			</div>
-		</Fragment>
+			<div className="column">
+				<label htmlFor="" className="label">
+					Question (Optional)
+				</label>
+				<div className="control">
+					<input
+						type="text"
+						name="question"
+						className="input"
+						placeholder="What did you work on today?"
+					/>
+				</div>
+			</div>
+		</div>
 	);
 }
 
 function checkinFactory() {
 	return {
-		time: '17:00'
+		time: '17:00',
+		question: null
 	};
 }
 
@@ -92,9 +111,9 @@ export default class Settings extends Component {
 	handleChangeEmail = ({ target: { value } }) => {
 		this.setState({ email: value });
 	};
-	handleChangeCheckin = (time, i) => {
+	handleChangeCheckin = (name, value, i) => {
 		const statePatch = update(this.state, {
-			checkins: { [i]: { time: { $set: time } } }
+			checkins: { [i]: { [name]: { $set: value } } }
 		});
 		this.setState(statePatch);
 	};
@@ -134,7 +153,9 @@ export default class Settings extends Component {
 					</div>
 				</div>
 				<h1 className="title">When would you like your checkins?</h1>
-				<h6 className="subtitle is-6">Times must be in 24 hour format (h:mm)</h6>
+				<h6 className="subtitle is-6">
+					Times must be in 24 hour format (h:mm)
+				</h6>
 				<div className="columns">
 					<div className="column">
 						<button className="button" onClick={this.addCheckin}>
@@ -149,8 +170,8 @@ export default class Settings extends Component {
 								removeCheckin={checkins.length > 1 && this.removeCheckin}
 								checkin={c}
 								key={i}
-								handleChange={({ target: { value } }) => {
-									this.handleChangeCheckin(value, i);
+								handleChange={({ target: { name, value } }) => {
+									this.handleChangeCheckin(name, value, i);
 								}}
 							/>
 						))}
