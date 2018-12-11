@@ -80,7 +80,14 @@ class App extends Component {
 				<div className="column">
 					<h1 className="title">{dateString} - What did you work on today?</h1>
 					<div className="field">
-						<div className="control">
+						<div
+							className="control"
+							onKeyDown={e => {
+								if (e.key == 'Enter' && (e.metaKey || e.ctrlKey)) {
+									this.submit();
+								}
+							}}
+						>
 							{preview ? (
 								<div className="content markdown-preview">
 									<Markdown source={entryText} />
